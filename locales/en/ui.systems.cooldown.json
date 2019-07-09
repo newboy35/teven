@@ -1,0 +1,12 @@
+{
+  "new": "New Cooldown",
+  "notify-as-whisper": "Notify as whisper",
+  "error": {
+    "isEmpty": "This value cannot be empty"
+  },
+  "settings": {
+    "enabled": "Status",
+    "cooldownNotifyAsWhisper": "Whisper cooldown informations",
+    "cooldownNotifyAsChat": "Chat message cooldown informations"
+  }
+}

@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#f4f5f6">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#f4f5f6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Poppins|PT+Sans|PT+Sans+Narrow|PT+Mono" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" rel="stylesheet">
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="./dist/css/light.css">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="./dist/css/sortable-theme-bootstrap.css">
+  <link rel="stylesheet" href="./dist/bootstrap-toggle/css/bootstrap-toggle.min.css" />
+  <link rel="stylesheet" href="./dist/bootstrap-slider/css/bootstrap-slider.min.css" />
+  <link rel="stylesheet" href="./dist/gridstack/css/gridstack.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.40.2/codemirror.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.40.2/addon/lint/lint.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism-tomorrow.min.css" />
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+  <!-- changelog modal dialog -->
+  <div class="modal" id="new_version_dlg" tabindex="-1" role="dialog" aria-labelledby="new_version_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Changelog
+            <small id="sogebot-version"></small>
+          </h4>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            <i data-lang="close"></i>
+          </button>
+          <a class="btn btn-primary" href="https://github.com/sogehige/sogeBot/releases">Go to release download</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
+    <a class="navbar-brand" href="#"><strong id="bot_name"></strong> <span id="current_version"></span></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav mr-auto" id="menu-main">
+        <li class="nav-item" id="menuDashboard">
+          <a href="/#/" data-page="dashboard" class="nav-link active" data-lang="dashboard"></a>
+        </li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span data-lang="manage"></span>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" id="menu-manage"></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span data-lang="settings"></span>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" id="menu-settings"></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span data-lang="menu.registry"></span>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" id="menu-registry"></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span data-lang="menu.logs"></span>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" id="menu-logs"></ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span data-lang="menu.stats"></span>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" id="menu-stats"></ul>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item page-menu" style="font-size: 0.6rem; position: relative; top: .2rem">
+          <span class="alert alert-warning" style="padding:0;" id="APIStatus" title="API checking" >API</span>
+          <span class="alert alert-warning" style="padding:0;" id="TMIStatus" title="TMI checking">TMI</span>
+          <span class="alert alert-warning" style="padding:0;" id="SOCStatus" title="SOC checking">SOC</span>
+          <span class="alert alert-warning" style="padding:0;" id="MODStatus" title="MOD checking">MOD</span>
+          <span class="alert alert-warning" style="padding:0;" id="RESStatus" title="RES checking">0ms</span>
+        </li>
+      </ul>
+
+      <div id="checklist"></div> <!-- vue.js others/checklist -->
+
+      <button class="ml-4 btn btn-success" href="#" id="new-version-notice" style="display: none; font-weight: bold; cursor: pointer;"
+        data-toggle="modal" data-target="#new_version_dlg">
+        <i class="fas fa-code-fork" aria-hidden="true"></i> Version <span id="version"></span> available
+      </button>
+
+      <div class="ml-4">
+        <button class="btn btn-xs btn-light dropdown-toggle" type="button" id="settingsButton" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          <i class="fas fa-bars" aria-hidden="true"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" style="right: 0; left: auto;" aria-labelledby="settingsButton">
+          <button class="dropdown-item text-success" onclick="joinBot()">
+            <i class="fas fa-sign-in-alt"></i>
+            join channel
+          </button>
+          <button class="dropdown-item text-danger" onclick="leaveBot()">
+            <i class="fas fa-sign-out-alt"></i>
+            leave from channel
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CHANGE TITLE/GAME DLG -->
+  <div id="changegamedlg"></div> <!-- vue.js others/changegamedlg -->
+
+  <!-- SNIPPETS -->
+  <div id="quickStatsApp"></div>
+
+  <div class="container-fluid" style="overflow-x: hidden;">
+    <!-- widgets -->
+    <span class="widgets p-0 pt-1">
+      <div id="dashboard"></div>
+    </span>
+  </div>
+
+  <div class="pages-wrapper pt-2 pb-5">
+    <div class="container-fluid">
+      <div id="pages"></div>
+      <div id="pages-old"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <a href="https://github.com/sogehige/SogeBot">GitHub</a> |
+    <a href="https://github.com/sogehige/SogeBot/issues">Issues</a> |
+    <a href="https://github.com/sogehige/SogeBot/blob/master/LICENSE">MIT License</a>
+  </footer>
+
+  <!-- jQuery and Popper (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="./dist/jquery/js/jquery.min.js"></script>
+  <script src="./dist/popper.js/js/popper.min.js"></script>
+  <!-- Router -->
+  <script src="./dist/page/js/page.js"></script>
+  <!-- LoDash goodness -->
+  <script src="./dist/lodash/js/lodash.min.js"></script>
+  <!-- Widgets drag'n'drop -->
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+  <script src="./dist/gridstack/js/gridstack.all.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="./dist/bootstrap/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  <script src="./dist/sortablejs/js/Sortable.min.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="./dist/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+  <script type="text/javascript" src="./dist/bootstrap-slider/js/bootstrap-slider.min.js"></script>
+  <script type="text/javascript" src="./dist/bootstrap-menu/js/BootstrapMenu.min.js"></script>
+  <script src="https://unpkg.com/chart.js@2.7.2/dist/Chart.bundle.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-chartkick@0.5.0/dist/vue-chartkick.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment-with-locales.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.3.1/markdown-it.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue2-datepicker@2.4.1/lib/index.min.js"></script>
+  <script type="text/javascript" src="/auth/token.js"></script>
+  <script type="text/javascript" src="./dist/js/commons/commons.js"></script>
+  <script type="text/javascript" src="./dist/js/components/components.js"></script>
+  <script src="/dist/velocity-animate/js/velocity.min.js"></script>
+  <!-- CodeMirror textarea editor -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.40.2/codemirror.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.40.2/mode/javascript/javascript.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.40.2/mode/htmlmixed/htmlmixed.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.40.2/mode/xml/xml.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.40.2/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.40.2/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.40.2/addon/lint/javascript-lint.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.40.2/addon/lint/lint.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.9.5/jshint.min.js"></script>
+  <!-- Prism code markup -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/prism.min.js"></script>
+
+  <!-- production version, optimized for size and speed -->
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <!-- dev version ->
+  <script src="https://vuejs.org/js/vue.js"></script-->
+
+  <script src="./dist/js/main.js"></script>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+
+  <script>
+    if (typeof token === 'undefined') {
+      $('body').empty().append(`
+      <div class="alert alert-danger ml-5 mr-5" role="alert">
+        This domain is not set as accessible in your <strong>config.json</strong>. Update your file and restart a bot to propagate changes. Example below:
+      </div>
+      <pre class="alert alert-info ml-5 mr-5" style="font-family: Monospace">
+  ... config.json ...
+  "panel": {
+    "__COMMENT__": "set correctly your domain and to be safe, change your token",
+    "username": "***",
+    "password": "***",
+    "port": ***,
+    "domain": "yourdomain1, ${window.location.host.split(':')[0]}",
+    "token": "***"
+  },
+  ... config.json ...
+      </pre>
+      `)
+    }
+
+    $('title').text(`${name.toUpperCase()}`)
+    $('#bot_name').text(`${name.toUpperCase()}`)
+
+    var socket = io({
+      query: "token=" + token
+    });
+
+    var loadedMenu = false
+    var addingWidget = false
+    var systems
+    var configuration
+
+    var translations = {}
+
+    console.debug('EMIT [getVersion]')
+    socket.emit('getVersion')
+    socket.once('version', function (version) {
+      $('#current_version').text(version)
+      $.get('https://api.github.com/repos/sogehige/sogebot/releases/latest', function (response) {
+        var md = new markdownit()
+        var commits = new RegExp('(?!added)[0-9a-f]{5,40}', 'gm')
+        let commits_match = response.body.match(commits)
+        if (!_.isNil(commits_match)) {
+          for (let commit of commits_match) {
+            commit_short = commit.substring(0, 6)
+            response.body = response.body.replace(commit, commit_short)
+          }
+        }
+
+        var issues = new RegExp('#[0-9]{1,4}', 'gm')
+        let issues_match = response.body.match(issues)
+        if (!_.isNil(issues_match)) {
+          for (let issue of issues_match) {
+            response.body = response.body.replace(issue, '[' + issue +
+              '](https://github.com/sogehige/sogeBot/issues/' + issue.replace('#', '') + ')')
+          }
+        }
+
+        response.body = response.body.replace(/### /g, '##### '); // change h3 => h5
+
+        $('#new_version_dlg .modal-body').html(md.render(response.body.replace('**Changelog**', '').trim()))
+        $('#new_version_dlg .modal-header small').text(response.tag_name)
+        console.debug('GITHUB version', response.tag_name)
+        console.debug('LOCAL version', version)
+        $('#version').text(response.tag_name)
+        $('title').text($('title').text() + ' ' + version)
+
+        let botVersion = version.replace('-SNAPSHOT', '').split('.')
+        let gitVersion = response.tag_name.split('.')
+
+        let isNewer = false
+        for (let index in botVersion) {
+          botVersion[index] = parseInt(botVersion[index], 10)
+          gitVersion[index] = parseInt(gitVersion[index], 10)
+          if (botVersion[index] < gitVersion[index]) {
+            isNewer = true
+            break
+          } else if (botVersion[index] === gitVersion[index]) continue
+          else {
+            isNewer = false
+            break
+          }
+        }
+        if (isNewer) $('#new-version-notice').css('display', 'inline')
+      })
+    })
+
+    socket.emit('systems', function (err, data) {
+      console.debug('EMIT [systems]')
+      systems = data
+    })
+
+    console.debug('EMIT [getConfiguration]')
+    socket.emit('getConfiguration')
+    socket.on('configuration', function (data) {
+      configuration = data
+      moment.locale(data.lang) // set moment locale
+      // THEME
+      if (data.core.ui.theme === 'dark') {
+        $('head').append('<link rel="stylesheet" href="./dist/css/dark.css">')
+      }
+    })
+
+    setInterval(function () {
+      console.debug('EMIT [getConnectionStatus]');
+      socket.emit('getConnectionStatus')
+      setStatus('SOC', socket.connected ? 3 : 0)
+    }, 1000)
+    socket.on('connectionStatus', function (data) {
+      _.each(data, function (status, conn) {
+        setStatus(conn, status)
+      })
+    })
+
+    /* ROUTERS */
+    let currentPage = null
+    page('/', function(p){
+      var id = p.hash.length === 0 || p.hash === '/' ? 'dashboard' : p.hash
+      if (id.startsWith('/')) id = id.replace('/', '')
+      if (currentPage === id.split('-')[0]) return
+      else currentPage = id.split('-')[0]
+      var visibility = id !== 'dashboard' ? 'none' : 'flex'
+      var visibilityBlock = id !== 'dashboard' ? 'none' : 'block'
+
+      $("#pages-old").empty()
+
+      if (id !== 'dashboard') $("#pages-old").append($('<div id="P' + id.split('-')[0] + '">').load('pages/' + id.split('-')[0] + '.html',
+        function () {
+          commons.translate()
+          $('a[data-toggle="tab"]').off()
+          $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var target = $(e.target).attr("href") // activated tab
+            if (target === '#manage') {
+              $('.plus-button').prop('disabled', false)
+              $('.plus-button').removeClass('disabled')
+            } else {
+              $('.plus-button').addClass('disabled')
+              $('.plus-button').prop('disabled', true)
+            }
+          })
+        }))
+      $(".widgets").css('display', visibilityBlock)
+    })
+    page({ popstate:true })
+
+    /* MENU */
+    socket.on('menu', function (menu) {
+      if (loadedMenu) return
+      loadMenu(menu)
+    })
+
+    function loadMenu(menu) {
+      if (_.size(translations) === 0) return setTimeout(() => loadMenu(menu), 10)
+
+      /* at first, clear all menu */
+      $('#menu-*').empty()
+      var games = false // we want only games settings once
+      var systems = false // we want only systems settings once
+      var integrations = false // we want only systems settings once
+      var overlays = false // we want only overlays settings once
+      var registry = false // we want only registry settings once
+      var core = false // we want only core settings once
+      var logs = false // we want only logs settings once
+
+      menu.sort((a, b) => {
+        return commons.translate('menu.' + a.name).localeCompare(commons.translate('menu.' + b.name))
+      }).forEach(obj => {
+        if (obj.id !== 'dashboard') {
+          if (obj.id.startsWith('/')) obj.id = obj.id.replace('/', '')
+
+          if ((obj.id === 'systems') && systems) return
+          if ((obj.id === 'overlays') && overlays) return
+          if ((obj.id === 'integrations') && integrations) return
+          if ((obj.id === 'registry') && registry) return
+          if ((obj.id === 'games') && games) return
+          if ((obj.id === 'core') && core) return
+          if ((obj.id === 'logs') && logs) return
+          if ((obj.id === 'stats') && stats) return
+          $('#menu-' + obj.category).append('<li class="nav-item"><a class="nav-link" href="#/' + obj.id.replace(/\./g, '/') + '" data-page="' +
+            obj.id.replace(/\./g, '/') + '">' + commons.translate('menu.' + obj.name) + '</a></li>')
+        }
+        if (obj.id === 'systems') systems = true
+        if (obj.id === 'overlays') overlays = true
+        if (obj.id === 'integrations') integrations = true
+        if (obj.id === 'registry') registry = true
+        if (obj.id === 'core') core = true
+        if (obj.id === 'logs') logs = true
+        if (obj.id === 'stats') stats = true
+        if (obj.id === 'games') games = true
+      })
+      loadedMenu = true
+
+      $(".page-menu a,#menu-main a").on('click', function (ev) {
+        if (!_.isNil(ev.currentTarget.dataset.page)) page('/#' + ev.currentTarget.dataset.page)
+        $(".page-menu a,#menu-main a").removeClass('active')
+        $(ev.currentTarget).addClass('active')
+      })
+    }
+
+    // addWidget
+    $("#addWidget").on('click', function (ev) {
+      if (!addingWidget) {
+        $(".widgets").append($('<div class="col">').load('widgets/widget_create.html'))
+        $("#addWidget").css('display', 'none')
+        addingWidget = true
+      }
+    })
+
+    Vue.prototype.commons = commons
+    var quickStatsApp = new Vue({
+      el: '#quickStatsApp',
+
+      data: {
+        socket: io({ query: "token=" + token }),
+        averageStats: {},
+
+        hideStats: false,
+        b_shortenNumber: true,
+        b_showAvgDiff: false,
+        b_percentage: false,
+
+        timestamp: null,
+        uptime: '--:--:--',
+        currentViewers: 0,
+        maxViewers: 0,
+        chatMessages: 0,
+        newChatters: 0,
+        currentHosts: 0,
+        currentViews: 0,
+        currentBits: 0,
+        currentWatched: 0,
+        currentSubscribers: 0,
+        currentFollowers: 0,
+        currentTips: 0,
+        currency: 'n/a',
+        broadcasterType: '',
+        tags: [],
+
+        isLoaded: false,
+      },
+      watched: {
+        timestamp: function () {
+          if (this.uptime === '') this.uptime = '00:00:00'
+          if (this.uptime === '00:00:00') {
+            this.currentViewers = 0
+            this.maxViewers = 0
+            this.chatMessages = 0
+            this.newChatters = 0
+            this.currentHosts = 0
+          }
+        }
+      },
+      computed: {
+        currentViewersComputed: function () {
+          return !this.hideStats ? this.currentViewers : `<small>${commons.translate('hidden')}</small>`
+        },
+        maxViewersComputed: function () {
+          return !this.hideStats ? this.maxViewers : `<small>${commons.translate('hidden')}</small>`
+        },
+        newChattersComputed: function () {
+          return !this.hideStats ? this.newChatters : `<small>${commons.translate('hidden')}</small>`
+        }
+      },
+      methods: {
+        filterTags (is_auto) {
+          return this.tags.filter(o => o.is_auto === is_auto).map((o) => {
+            const lang = _.get(configuration, 'core.general.lang', 'en')
+            const localekey  = Object.keys(o.localization_names).find((l) => l.startsWith(lang))
+            if (localekey) {
+              return { name: o.localization_names[localekey], is_auto: o.is_auto }
+            }
+          }).sort((a, b) => {
+            if (a.name < b.name)  { //sort string ascending
+              return -1;
+            }
+            if (a.name > b.name) {
+              return 1;
+            }
+            return 0; //default return value (no sorting)
+          });
+        },
+        difference: function (number, current, shorten, postfix, toFixed) {
+          postfix = postfix || ''
+          shorten = typeof shorten === 'undefined' ? true : shorten
+          number = number || 0
+          if (_.isNaN(Number(current)) || this.uptime === '00:00:00' || !this.b_showAvgDiff) return '' // return nothing if current is not number (hidden, etc)
+          else if (number === 0) return ''
+          else {
+            let isPositive = current - number >= 0
+            let f_difference =  Math.abs(this.b_percentage ? (Math.round((current - number) / number * 1000) / 10) : current - number)
+            if (this.b_percentage) {
+              f_difference = Number(f_difference).toFixed(1)
+              f_difference = `${f_difference}%`
+            } else {
+              if (shorten) {
+                f_difference = this.$options.filters.shortenNumber(f_difference, this.b_shortenNumber)
+              }
+              if (toFixed) {
+                f_difference = Number(f_difference).toFixed(toFixed)
+              }
+              f_difference = f_difference + postfix
+            }
+
+            if (current - number === 0) {
+              return ''
+            } else if (isPositive) {
+              return `<small class="stats-up text-success"><i class="fas fa-caret-up"></i>${f_difference}</small>`
+            } else {
+              return `<small class="stats-down text-danger"><i class="fas fa-caret-down"></i>${f_difference}</small>`
+            }
+          }
+        },
+        toggleViewerShow: function () {
+          this.hideStats = !this.hideStats
+        }
+      },
+      created: function () {
+        this.socket.emit('getLatestStats')
+        this.socket.emit('panel.sendStreamData')
+
+        setInterval(() => {
+          this.socket.emit('getLatestStats')
+          this.socket.emit('panel.sendStreamData')
+        }, 1000)
+
+        this.socket.on('latestStats', (data) => { this.averageStats = data })
+        this.socket.on('stats', (data) => {
+          for (let [key, value] of Object.entries(data)) {
+            this[key] = value // populate data
+          }
+          this.timestamp = new Date()
+          this.isLoaded = true
+        })
+      },
+      filters: {
+        shortenNumber: function (number, shortify) {
+          if (!shortify || Number(number) <= 10000) return number
+          var SI_PREFIXES = ["", "k", "M", "G", "T", "P", "E"];
+          // what tier? (determines SI prefix)
+          var tier = Math.log10(number) / 3 | 0;
+          // if zero, we don't need a prefix
+          if(tier == 0) return number;
+          // get prefix and determine scale
+          var prefix = SI_PREFIXES[tier];
+          var scale = Math.pow(10, tier * 3);
+          // scale the number
+          var scaled = number / scale;
+          // format number and add prefix as suffix
+          return scaled.toFixed(1) + prefix;
+        }
+      }
+    })
+
+    /* STATS */
+    socket.on('lang', function (data) {
+      translations = data
+      let elements = $('[data-lang]')
+      for (let el of elements) {
+        let translation = _.get(translations, $(el).data('lang'), null)
+        if(_.isNil(translation)) {
+          $(el).html(`{${$(el).data('lang')}}`)
+        } else {
+          $(el).html(translation)
+        }
+      }
+      $('#change-game-input').attr('placeholder', translations['create-and-use-a-new-game'])
+      $('#change-title').attr('placeholder', translations['create-and-use-a-new-title'])
+    })
+
+    socket.off('play-sound')
+    socket.on('play-sound', function (sound) {
+      var audio = new Audio(sound).play()
+    })
+
+    var loadCustomVariableValue = async function (variable) {
+      return new Promise((resolve, reject) => {
+        socket.emit('custom.variable.value', variable, (err, value) => {
+          resolve(value)
+        })
+      })
+    }
+
+    var setStatus = function (id, status) {
+      $("#" + id + "Status").data('status', status)
+
+      $("#" + id + "Status").removeClass()
+
+      if (id === 'SOC' && status === 0) {
+        $("[id$='Status']").removeClass()
+        $("[id$='Status']").addClass('alert alert-muted')
+      }
+
+      if (id === 'RES') {
+        $("#" + id + "Status").attr('title', 'Average bot response ' + status + 'ms')
+        if (status >= 1500) {
+          $("#" + id + "Status").addClass('alert alert-danger')
+        } else if (status < 1500 && status >= 800) {
+          $("#" + id + "Status").addClass('alert alert-warning')
+        } else {
+          $("#" + id + "Status").addClass('alert alert-success')
+        }
+        $("#" + id + "Status").text(status + 'ms')
+        $("#" + id + "Status").css('padding', '0')
+      }
+
+      if (id === 'MOD') {
+        $("#" + id + "Status").attr('title', 'Bot is' + (status ? ' ' : ' not ') + 'a MOD')
+        $("#" + id + "Status").addClass('alert alert-' + (status ? 'success' : 'danger'))
+        $("#" + id + "Status").css('padding', '0')
+        return
+      }
+
+      switch (status) {
+        case 0:
+          $("#" + id + "Status").attr('title', id + ' disconnected')
+          $("#" + id + "Status").addClass('alert alert-danger')
+          break;
+        case 1:
+          $("#" + id + "Status").attr('title', id + ' connecting')
+          $("#" + id + "Status").addClass('alert alert-warning')
+          break;
+        case 2:
+          $("#" + id + "Status").attr('title', id + ' reconnecting')
+          $("#" + id + "Status").addClass('alert alert-warning')
+        case 3:
+          $("#" + id + "Status").attr('title', id + ' connected')
+          $("#" + id + "Status").addClass('alert alert-success')
+          break;
+      }
+      $("#" + id + "Status").css('padding', '0')
+    }
+
+   // dont save as html anywhere on contenteditables
+   $(document).on("paste","[contenteditable=true]", function(e) {
+    var text = '';
+    var that = $(this);
+
+    if (e.clipboardData)
+        text = e.clipboardData.getData('text/plain');
+    else if (window.clipboardData)
+        text = window.clipboardData.getData('Text');
+    else if (e.originalEvent.clipboardData)
+        text = $('<div></div>').text(e.originalEvent.clipboardData.getData('text'));
+
+    if (document.queryCommandSupported('insertText')) {
+        document.execCommand('insertHTML', false, $(text).html());
+        return false;
+    }
+    else { // IE > 7
+      that.find('*').each(function () {
+            $(this).addClass('within');
+      });
+
+      setTimeout(function () {
+            // nochmal alle durchlaufen
+            that.find('*').each(function () {
+                  // wenn das element keine klasse 'within' hat, dann unwrap
+                  // http://api.jquery.com/unwrap/
+                  $(this).not('.within').contents().unwrap();
+            });
+      }, 1);
+    }
+    })
+
+    function joinBot() {
+      socket.emit('joinBot')
+    }
+
+    function leaveBot() {
+      socket.emit('leaveBot')
+    }
+
+    $(document).on('click', '.widget-popout a', (ev) => {
+      ev.preventDefault()
+      let widget = $(ev.currentTarget).attr('href').split('#')[1]
+      window.open($(ev.currentTarget).attr('href'),widget,'height=600,width=600');
+    })
+
+    // allow focus on dropdowns with data-allow-focus
+    $(document).on("click", "[data-allow-focus]", function(e) {
+      e.preventDefault()
+      e.stopPropagation();
+    });
+  </script>
+</body>
+</html>

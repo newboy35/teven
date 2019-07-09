@@ -1,0 +1,28 @@
+{
+  "settings": {
+    "enabled": "Status",
+    "volume": "Hlasitost",
+    "calculateVolumeByLoudness": "Vypočítat hlasitost podle loudness",
+    "duration": {
+      "title": "Maximální délka skladby",
+      "help": "v minutách"
+    },
+    "shuffle": "Zamíchat",
+    "songrequest": "Přehrávání ze song requestu",
+    "playlist": "Přehrávání z playlistu",
+    "onlyMusicCategory": "Přehrávání pouze z kategorie Hudba",
+    "notify": "Odeslat zprávu při změně skladby"
+  },
+  "error": {
+    "isEmpty": "Tato hodnota nesmí být prázdná"
+  },
+  "startTime": "Začít skladbu v",
+  "endTime": "Ukončit skladbu v",
+  "add_song": "Přidat píseň",
+  "add_or_import": "Přidat skladbu nebo import ze seznamu skladeb",
+  "importing": "Importuji",
+  "importing_done": "Importování Hotovo",
+  "seconds": "Vteřiny",
+  "calculated": "Vypočítáno",
+  "set_manually": "Nastavit ručně"
+}

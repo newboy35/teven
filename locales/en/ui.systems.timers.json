@@ -1,0 +1,8 @@
+{
+  "new": "New Timer",
+  "add_response": "Add Response",
+  "settings": {
+    "enabled": "Status"
+  },
+  "warning": "This action cannot be reverted!"
+}

@@ -1,0 +1,26 @@
+{
+  "settings": {
+    "enabled": "Status",
+    "songRequests": "Požadavky na skladbu",
+    "fetchCurrentSongWhenOffline": {
+      "title": "Načíst aktuální skladbu, i když je stream offline",
+      "help": "Doporučuje se, aby byla tato funkce vypnuta, aby nedošlo k dosažení limitů API"
+    },
+    "clientId": "clientId",
+    "clientSecret": "clientSecret",
+    "redirectURI": "redirectURI",
+    "format": {
+      "title": "Formát",
+      "help": "Dostupné proměnné: $song, $artist"
+    },
+    "username": "Autorizovaný uživatel",
+    "revoke": "Zrušit autorizaci uživatele",
+    "authorize": "Autorizovat uživatele",
+    "scopes": "Scopes",
+    "playlistToPlay": {
+      "title": "Hlavní playlist",
+      "help": "Pokud bude nastaveno, po requestu bude hrát tento playlist"
+    },
+    "continueOnPlaylistAfterRequest": "Pokračovat v přehrávání playlistu po požadavku na skladbu"
+  }
+}

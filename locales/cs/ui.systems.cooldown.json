@@ -1,0 +1,12 @@
+{
+  "new": "Nový Cooldown",
+  "notify-as-whisper": "oznámit šepotem",
+  "error": {
+    "isEmpty": "Tato hodnota nesmí být prázdná"
+  },
+  "settings": {
+    "enabled": "Status",
+    "cooldownNotifyAsWhisper": "Oznámit informace o cooldown přes whisper",
+    "cooldownNotifyAsChat": "Oznámit informace o cooldown přes chat"
+  }
+}

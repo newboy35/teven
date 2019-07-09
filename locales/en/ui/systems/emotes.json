@@ -1,0 +1,17 @@
+{
+  "settings": {
+    "removecache": "Delete cache",
+    "cEmotesSize": "Emotes size",
+    "cEmotesMaxEmotesPerMessage": "Maximum of emotes per messge",
+    "cEmotesAnimation": "Animation",
+    "cEmotesAnimationTime": "Animation duration",
+    "cExplosionNumOfEmotes": "No. of emotes",
+    "cExplosionNumOfEmotesPerExplosion": "No. of emotes per explosion",
+    "cExplosionNumOfExplosions": "No. of explosions",
+    "test": {
+      "emoteExplosion": "Emote explosion",
+      "emote": "Emote",
+      "emoteFirework": "Emote firework"
+    }
+  }
+}

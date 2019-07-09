@@ -1,0 +1,32 @@
+{
+  "__README__": "https://github.com/sogehige/SogeBot/wiki/Install-and-Upgrade",
+  "timezone": "system",
+  "threads": 1,
+  "settings": {
+    "bot_color": "OrangeRed"
+  },
+  "panel": {
+    "__COMMENT__": "set correctly your domain and to be safe, change your token",
+    "username": "admin",
+    "password": "admin",
+    "port": 20000,
+    "domain": "localhost",
+    "token": "7911776886"
+  },
+  "database": {
+    "__README__": "https://github.com/sogehige/sogeBot/wiki/Database-configuration",
+    "type": "nedb",
+    "mongodb": {
+      "poolSize": 5,
+      "url": "mongodb://localhost:27017/your-db-name"
+    }
+  },
+  "metrics": {
+    "translations": true
+  },
+  "debug": {
+    "__COMMENT__": "DON'T ENABLE THIS UNTIL YOU KNOW WHAT YOU ARE DOING!",
+    "all": false,
+    "console": false
+  }
+}

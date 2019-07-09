@@ -1,0 +1,23 @@
+{
+  "new": "Nový Vlastní Příkaz",
+  "command": {
+    "name": "vlastní příkaz",
+    "placeholder": ""
+  },
+  "addResponse": "Nová odpověď",
+  "response": {
+    "name": "odpověď",
+    "placeholder": ""
+  },
+  "filter": {
+    "name": "filter",
+    "placeholder": "Přidat filtr k této odpovědi"
+  },
+  "error": {
+    "isEmpty": "Tato hodnota nesmí být prázdná"
+  },
+  "warning": "Tato akce nemůže být vrácena!",
+  "settings": {
+    "enabled": "Status"
+  }
+}

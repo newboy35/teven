@@ -1,0 +1,23 @@
+{
+  "new": "New Custom Command",
+  "command": {
+    "name": "custom command",
+    "placeholder": ""
+  },
+  "addResponse": "Add response",
+  "response": {
+    "name": "response",
+    "placeholder": ""
+  },
+  "filter": {
+    "name": "filter",
+    "placeholder": "Add filter for this response"
+  },
+  "error": {
+    "isEmpty": "This value cannot be empty"
+  },
+  "warning": "This action cannot be reverted!",
+  "settings": {
+    "enabled": "Status"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "new": "Nový Alias",
+  "alias": {
+    "name": "alias",
+    "placeholder": "Nastavte zde svůj !alias"
+  },
+  "command": {
+    "name": "příkaz",
+    "placeholder": "Nastavte zde svůj !příkaz pro alias"
+  },
+  "error": {
+    "isEmpty": "Tato hodnota nesmí být prázdná"
+  },
+  "warning": "Tato akce nemůže být vrácena!",
+  "settings": {
+    "enabled": "Status"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    // this aligns with Vue's browser support
+    "target": "es6",
+    // this enables stricter inference for data properties on `this`
+    "strict": true,
+    // if using webpack 2+ or rollup, to leverage tree shaking:
+    "module": "commonjs",
+    "incremental": true,
+    "removeComments": true,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "moduleResolution": "node",
+    "lib": ["es2018", "dom"],
+    "declaration": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "baseUrl": "./",
+    "paths": {
+      "@config": ["config.json", "config.example.json"],
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "d.ts/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+}
