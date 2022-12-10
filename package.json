@@ -22,7 +22,7 @@
     "currency-symbol-map": "4.0.4",
     "decode-html": "2.0.0",
     "docsify": "4.9.4",
-    "express": "4.17.1",
+    "express": "4.17.3",
     "figlet": "1.2.3",
     "flv.js": "1.5.0",
     "git-commit-info": "1.0.0",
