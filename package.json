@@ -52,7 +52,7 @@
     "source-map-support": "0.5.12",
     "spotify-web-api-node": "4.0.0",
     "stacktrace-parser": "0.1.6",
-    "terminal-kit": "1.28.3",
+    "terminal-kit": "2.1.8",
     "twitch-js": "2.0.0-beta.30",
     "twitter": "1.7.1",
     "url-join": "4.0.1",
